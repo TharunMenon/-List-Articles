@@ -14,10 +14,20 @@ class ArticleListTableViewController: UITableViewController {
     var selectType: Int?
     var apiUrl:URL?
     var filterValue:String = " "
+    var activityIndicatorView: UIActivityIndicatorView!
     
     private var articleListVM: ArticleListViewModel!
     
     // MARK: - Lifecycle
+    
+    
+    override func loadView() {
+        super.loadView()
+        
+        activityIndicatorView = UIActivityIndicatorView(style: .gray)
+        
+        tableView.backgroundView = activityIndicatorView
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.prefersLargeTitles = true
@@ -27,6 +37,8 @@ class ArticleListTableViewController: UITableViewController {
     
     
 private func setup() {
+    
+    activityIndicatorView.startAnimating()
     
     if selectType == 0
     {
@@ -47,6 +59,7 @@ private func setup() {
                 
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
+                    self.activityIndicatorView.stopAnimating()
                 }}}}
     
     // MARK: - TableView Delegates & Data Source
@@ -73,5 +86,8 @@ private func setup() {
         
         return cell
     }
+    
+    
+    
     
 }

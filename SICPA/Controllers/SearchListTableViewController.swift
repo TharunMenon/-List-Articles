@@ -15,12 +15,21 @@ class SearchListTableViewController: UITableViewController {
     var filterValue:String = " "
     var titleArray = [String]()
     var descArray = [String]()
+    var activityIndicatorView: UIActivityIndicatorView!
     
     private var searchListViewModel = SearchListViewModel()
 
    
 
     // MARK: - Lifecycle
+    
+    override func loadView() {
+        super.loadView()
+        
+        activityIndicatorView = UIActivityIndicatorView(style: .gray)
+        
+        tableView.backgroundView = activityIndicatorView
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.prefersLargeTitles = true
@@ -30,7 +39,7 @@ class SearchListTableViewController: UITableViewController {
 }
     private func setup() {
 
-
+          activityIndicatorView.startAnimating()
           let apiUrl = URL(string:"https://api.nytimes.com/svc/search/v2/articlesearch.json?q=\(filterValue)&api-key=la65gzNUxJpAtGhWGoMEUHAfL1OWqiYG")!
         
         let weatherResource = Resource<SearchViewModel>(url: apiUrl) { data in
@@ -44,7 +53,9 @@ class SearchListTableViewController: UITableViewController {
             if let searchVM = result {
 
                 self!.searchListViewModel.addsearchViewModel(searchVM)
-                self!.tableView.reloadData()}
+                self!.tableView.reloadData()
+                self!.activityIndicatorView.stopAnimating()
+            }
             }}
 
     // MARK: - TableView Delegates & Data Source
